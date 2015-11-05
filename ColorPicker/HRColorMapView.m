@@ -45,6 +45,8 @@
 
 @property (nonatomic, strong) UIImage *colorMapImage;
 @property (nonatomic, strong) UIImage *backgroundImage;
+@property (nonatomic, strong) UIImage *landscapeColorMapImage;
+@property (nonatomic, strong) UIImage *landscapeBackgroundImage;
 @end
 
 @implementation HRColorMapView {
@@ -217,9 +219,28 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    [self createColorMapLayer];
+    [self updateColorMapLayer];
     [self updateColorCursor];
     _didLayoutSubview = YES;
     [_initializeQueue setSuspended:!self.isAbleToCreateColorMap];
+}
+
+- (void)updateColorMapLayer
+{
+    if (self.frame.size.height > self.frame.size.width) {
+        // portrait.
+        self.colorMapLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.colorMapImage.size};
+        self.colorMapLayer.contents = (id) self.colorMapImage.CGImage;
+        self.colorMapBackgroundLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.backgroundImage.size};
+        self.colorMapBackgroundLayer.contents = (id) self.backgroundImage.CGImage;
+    } else {
+        // landscape
+        self.colorMapLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.landscapeColorMapImage.size};
+        self.colorMapLayer.contents = (id) self.landscapeColorMapImage.CGImage;
+        self.colorMapBackgroundLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.landscapeBackgroundImage.size};
+        self.colorMapBackgroundLayer.contents = (id) self.landscapeBackgroundImage.CGImage;
+    }
 }
 
 - (CGSize)intrinsicContentSize {
@@ -265,17 +286,24 @@
 }
 
 - (void)createColorMapLayer {
-    if (self.colorMapImage) {
-        return;
+    // portraint.
+    if (self.frame.size.height > self.frame.size.width && !self.colorMapImage) {
+        self.colorMapImage = [HRColorMapView colorMapImageWithSize:self.frame.size
+                                                          tileSize:self.tileSize.floatValue
+                                              saturationUpperLimit:self.saturationUpperLimit.floatValue];
+
+        self.backgroundImage = [HRColorMapView backgroundImageWithSize:self.frame.size
+                                                              tileSize:self.tileSize.floatValue];
     }
+    // landscape.
+    if (self.frame.size.width > self.frame.size.height && !self.landscapeColorMapImage) {
+        self.landscapeColorMapImage = [HRColorMapView colorMapImageWithSize:self.frame.size
+                                                          tileSize:self.tileSize.floatValue
+                                              saturationUpperLimit:self.saturationUpperLimit.floatValue];
 
-    self.colorMapImage = [HRColorMapView colorMapImageWithSize:self.frame.size
-                                                      tileSize:self.tileSize.floatValue
-                                          saturationUpperLimit:self.saturationUpperLimit.floatValue];
-
-    self.backgroundImage = [HRColorMapView backgroundImageWithSize:self.frame.size
-                                                          tileSize:self.tileSize.floatValue];
-
+        self.landscapeBackgroundImage = [HRColorMapView backgroundImageWithSize:self.frame.size
+                                                              tileSize:self.tileSize.floatValue];
+    }
 }
 
 - (void)setColor:(UIColor *)color {

@@ -192,6 +192,7 @@ typedef struct timeval timeval;
 }
 
 - (BOOL)usingAutoLayout {
+    return NO;
     return self.constraints && self.constraints.count > 0;
 }
 
@@ -214,6 +215,13 @@ typedef struct timeval timeval;
             .size = self.colorMapView.intrinsicContentSize
     };
     colorMapFrame.origin.y = CGRectGetHeight(self.frame) - CGRectGetHeight(colorMapFrame);
+    
+    // for landscape.
+    if (self.frame.size.width > self.frame.size.height) {
+        colorMapFrame.origin.y = headerHeight;
+        colorMapFrame.size.height = self.bounds.size.height - headerHeight;
+    }
+    
     self.colorMapView.frame = colorMapFrame;
     headerHeight = CGRectGetMinY(colorMapFrame);
 
