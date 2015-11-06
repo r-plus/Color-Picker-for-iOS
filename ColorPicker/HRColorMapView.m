@@ -340,13 +340,14 @@
             if ([_colorCursor respondsToSelector:@selector(setEditing:)]) {
                 [_colorCursor setEditing:NO];
             }
+            [self updateColorCursor];
             return;
         }
         CGPoint tapPoint = [sender locationOfTouch:0 inView:self];
-        [self update:tapPoint];
         if ([_colorCursor respondsToSelector:@selector(setEditing:)]) {
             [_colorCursor setEditing:YES];
         }
+        [self update:tapPoint];
     }
 }
 
@@ -393,6 +394,8 @@
     newPosition.y = (1.0f - hsvColor.s) * (1.0f / self.saturationUpperLimit.floatValue) * (CGFloat) (pixelCountY - 1) * _tileSize.floatValue + _tileSize.floatValue / 2.0f;
     colorCursorPosition.x = (int) (newPosition.x / _tileSize.floatValue) * _tileSize.floatValue;
     colorCursorPosition.y = (int) (newPosition.y / _tileSize.floatValue) * _tileSize.floatValue;
+    if (_colorCursor.isEditing)
+        colorCursorPosition.y -= 50;
     _colorCursor.color = self.color;
     _colorCursor.transform = CGAffineTransformMakeTranslation(colorCursorPosition.x, colorCursorPosition.y);
 }

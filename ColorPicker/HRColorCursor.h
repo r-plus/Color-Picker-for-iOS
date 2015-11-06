@@ -36,6 +36,7 @@
 @interface HRColorCursor : UIView <HRColorCursor>
 
 @property (nonatomic, strong) UIColor *color;
+@property (nonatomic, getter=isEditing) BOOL editing;
 
 + (CGSize)cursorSize;
 

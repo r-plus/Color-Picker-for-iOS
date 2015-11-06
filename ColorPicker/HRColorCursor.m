@@ -30,7 +30,6 @@
 @interface HRColorCursor ()
 - (id)initWithPoint:(CGPoint)point;
 
-@property (nonatomic) BOOL editing;
 @property (nonatomic, getter=isGrayCursor) BOOL grayCursor;
 
 @end
