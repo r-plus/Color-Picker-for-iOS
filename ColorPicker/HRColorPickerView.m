@@ -207,23 +207,18 @@ typedef struct timeval timeval;
     self.colorMapView.frame = CGRectMake(
             0, headerHeight,
             CGRectGetWidth(self.frame),
-            MAX(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) - headerHeight)
+            CGRectGetHeight(self.frame) - headerHeight
+            //MAX(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) - headerHeight)
     );
     // use intrinsicContentSize for 3.5inch screen
-    CGRect colorMapFrame = (CGRect) {
-            .origin = CGPointZero,
-            .size = self.colorMapView.intrinsicContentSize
-    };
-    colorMapFrame.origin.y = CGRectGetHeight(self.frame) - CGRectGetHeight(colorMapFrame);
+    //CGRect colorMapFrame = (CGRect) {
+    //        .origin = CGPointZero,
+    //        .size = self.colorMapView.intrinsicContentSize
+    //};
+    //colorMapFrame.origin.y = CGRectGetHeight(self.frame) - CGRectGetHeight(colorMapFrame);
     
-    // for landscape.
-    if (self.frame.size.width > self.frame.size.height) {
-        colorMapFrame.origin.y = headerHeight;
-        colorMapFrame.size.height = self.bounds.size.height - headerHeight;
-    }
-    
-    self.colorMapView.frame = colorMapFrame;
-    headerHeight = CGRectGetMinY(colorMapFrame);
+    //self.colorMapView.frame = colorMapFrame;
+    //headerHeight = CGRectGetMinY(colorMapFrame);
 
     self.colorInfoView.frame = CGRectMake(8, (headerHeight - 84) / 2.0f, 66, 84);
 
