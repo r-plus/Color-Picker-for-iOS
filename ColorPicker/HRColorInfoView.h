@@ -32,6 +32,6 @@
 @property (nonatomic, strong) UIColor *color;
 @end
 
-@interface HRColorInfoView : UIView <HRColorInfoView>
+@interface HRColorInfoView : UIView <HRColorInfoView, UITextFieldDelegate>
 
 @end

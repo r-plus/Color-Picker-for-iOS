@@ -101,6 +101,7 @@ typedef struct timeval timeval;
         self.colorMapView.color = self.color;
         self.colorMapView.brightness = _currentHsvColor.v;
     }
+    [self sendActions];
 }
 
 - (UIView <HRColorInfoView> *)colorInfoView {

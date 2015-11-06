@@ -27,6 +27,8 @@
 
 
 #import "HRColorInfoView.h"
+#import "HRColorPickerView.h"
+#import "../../deletecut/deletecutsettings/HexColors/HexColors.h"
 
 const CGFloat kHRColorInfoViewLabelHeight = 18.;
 const CGFloat kHRColorInfoViewCornerRadius = 3.;
@@ -37,8 +39,9 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 @end
 
 @implementation HRColorInfoView {
-    UILabel *_hexColorLabel;
+    //UILabel *_hexColorLabel;
     CALayer *_borderLayer;
+    UITextField *_hexLabelField;
 }
 
 @synthesize color = _color;
@@ -65,13 +68,21 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 
 - (void)_init {
     self.backgroundColor = [UIColor clearColor];
-    _hexColorLabel = [[UILabel alloc] init];
-    _hexColorLabel.backgroundColor = [UIColor clearColor];
-    _hexColorLabel.font = [UIFont systemFontOfSize:12];
-    _hexColorLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
-    _hexColorLabel.textAlignment = NSTextAlignmentCenter;
+    //_hexColorLabel = [[UILabel alloc] init];
+    //_hexColorLabel.backgroundColor = [UIColor clearColor];
+    //_hexColorLabel.font = [UIFont systemFontOfSize:12];
+    //_hexColorLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
+    //_hexColorLabel.textAlignment = NSTextAlignmentCenter;
 
-    [self addSubview:_hexColorLabel];
+    //[self addSubview:_hexColorLabel];
+
+    _hexLabelField = [UITextField new];
+    _hexLabelField.delegate = self;
+    _hexLabelField.backgroundColor = [UIColor clearColor];
+    _hexLabelField.font = [UIFont systemFontOfSize:12];
+    _hexLabelField.textColor = [UIColor colorWithWhite:0.5 alpha:1];
+    _hexLabelField.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:_hexLabelField];
 
     _borderLayer = [[CALayer alloc] initWithLayer:self.layer];
     _borderLayer.cornerRadius = kHRColorInfoViewCornerRadius;
@@ -83,7 +94,8 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    _hexColorLabel.frame = CGRectMake(
+    //_hexColorLabel.frame = CGRectMake(
+    _hexLabelField.frame = CGRectMake(
             0,
             CGRectGetHeight(self.frame) - kHRColorInfoViewLabelHeight,
             CGRectGetWidth(self.frame),
@@ -92,12 +104,18 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
     _borderLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.frame.size};
 }
 
+//- (NSString *)hexStringFromColor:(UIColor *)color
+//{
+//    CGFloat r, g, b, a;
+//    [color getRed:&r green:&g blue:&b alpha:&a];
+//    int rgb = (int) (r * 255.0f)<<16 | (int) (g * 255.0f)<<8 | (int) (b * 255.0f)<<0;
+//    return [NSString stringWithFormat:@"%06x", rgb];
+//}
+
 - (void)setColor:(UIColor *)color {
     _color = color;
-    CGFloat r, g, b, a;
-    [_color getRed:&r green:&g blue:&b alpha:&a];
-    int rgb = (int) (r * 255.0f)<<16 | (int) (g * 255.0f)<<8 | (int) (b * 255.0f)<<0;
-    _hexColorLabel.text = [NSString stringWithFormat:@"#%06x", rgb];
+    //_hexColorLabel.text = [NSString stringWithFormat:@"#%06x", rgb];
+    _hexLabelField.text = [UIColor DC_hexWithColor:color];
     [self setNeedsDisplay];
 }
 
@@ -111,8 +129,21 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 }
 
 - (UIView *)viewForBaselineLayout {
-    return _hexColorLabel;
+    return _hexLabelField;
+    //return _hexColorLabel;
 }
 
+// textFiel delegate
+- (void)textFieldDidEndEditing:(UITextField * _Nonnull)textField
+{
+    UIColor *color = [UIColor DC_colorWithHexString:textField.text];
+    if ([self.superview respondsToSelector:@selector(setColor:)])
+        ((HRColorPickerView *)self.superview).color = color;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField * _Nonnull)textField
+{
+    return [_hexLabelField resignFirstResponder];
+}
 @end
 
