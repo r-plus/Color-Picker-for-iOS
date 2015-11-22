@@ -228,17 +228,24 @@
 
 - (void)updateColorMapLayer
 {
+    // NOTE: these CGRect calc code assumes that colorMapImage and backgroundImage are same size.
     if (self.frame.size.height > self.frame.size.width) {
         // portrait.
-        self.colorMapLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.colorMapImage.size};
+        CGFloat originX = (self.frame.size.width - self.colorMapImage.size.width) / 2.0;
+        CGRect rect = (CGRect) {.origin = CGPointZero, .size = self.colorMapImage.size};
+        rect.origin.x = originX;
+        self.colorMapLayer.frame = rect;
         self.colorMapLayer.contents = (id) self.colorMapImage.CGImage;
-        self.colorMapBackgroundLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.backgroundImage.size};
+        self.colorMapBackgroundLayer.frame = rect;
         self.colorMapBackgroundLayer.contents = (id) self.backgroundImage.CGImage;
     } else {
         // landscape
-        self.colorMapLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.landscapeColorMapImage.size};
+        CGFloat originX = (self.frame.size.width - self.landscapeColorMapImage.size.width) / 2.0;
+        CGRect rect = (CGRect) {.origin = CGPointZero, .size = self.landscapeColorMapImage.size};
+        rect.origin.x = originX;
+        self.colorMapLayer.frame = rect;
         self.colorMapLayer.contents = (id) self.landscapeColorMapImage.CGImage;
-        self.colorMapBackgroundLayer.frame = (CGRect) {.origin = CGPointZero, .size = self.landscapeBackgroundImage.size};
+        self.colorMapBackgroundLayer.frame = rect;
         self.colorMapBackgroundLayer.contents = (id) self.landscapeBackgroundImage.CGImage;
     }
 }
@@ -394,6 +401,7 @@
     newPosition.y = (1.0f - hsvColor.s) * (1.0f / self.saturationUpperLimit.floatValue) * (CGFloat) (pixelCountY - 1) * _tileSize.floatValue + _tileSize.floatValue / 2.0f;
     colorCursorPosition.x = (int) (newPosition.x / _tileSize.floatValue) * _tileSize.floatValue;
     colorCursorPosition.y = (int) (newPosition.y / _tileSize.floatValue) * _tileSize.floatValue;
+    colorCursorPosition.x += self.colorMapLayer.frame.origin.x;
     if (_colorCursor.isEditing)
         colorCursorPosition.y -= 50;
     _colorCursor.color = self.color;
