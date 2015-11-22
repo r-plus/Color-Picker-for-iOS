@@ -152,7 +152,7 @@ typedef struct timeval timeval;
         [_colorMapView addTarget:self
                           action:@selector(colorMapColorChanged:)
                 forControlEvents:UIControlEventValueChanged];
-        _colorMapView.backgroundColor = [UIColor redColor];
+        _colorMapView.backgroundColor = [UIColor clearColor];
         [self addSubview:_colorMapView];
     }
     return _colorMapView;
